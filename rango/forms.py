@@ -1,10 +1,9 @@
 from django import forms
 from rango.models import Page, Category
 
-class CategoryFrom(forms.ModelForm):
+class CategoryForm(forms.ModelForm):
 
-    name = forms.CharField(Category.name.max_length,
-                            help_text="Please enter the category name.")
+    name = forms.CharField(max_length=Category.name_max_len, help_text="Please enter the category name.")
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     likes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     slug = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -18,10 +17,8 @@ class CategoryFrom(forms.ModelForm):
 
 class PageForm(forms.ModelForm):
 
-    title = forms.CharField(Page.title.max_length,
-                            help_text="Please enter the title of the page.")
-    url = forms.URLField(max_length=200,
-                        help_text="Please enter the URL of the page.")
+    title = forms.CharField(max_length = Page.title_max_len, help_text="Please enter the title of the page.")
+    url = forms.URLField(max_length=Page.url_max_len, help_text="Please enter the URL of the page.")
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
 
     def clean(self):
@@ -40,12 +37,4 @@ class PageForm(forms.ModelForm):
     class Meta:
         #  Provide an association between the ModelForm and a model
         model = Page
-
-        # What fields do we want to include in our form?
-        # This way we don't need every field in the model present.
-        # Some fields may allow NULL values; we may not want to include them.
-        # Here, we are hiding the foreign key.
-        # we can either exclude the category field from the form,
         exclude = ('category',)
-        # or specify the fields to include (don't include the category field).
-        #fields = ('title', 'url', 'views')

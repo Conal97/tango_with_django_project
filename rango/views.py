@@ -1,8 +1,8 @@
-from rango.forms import CategoryFrom
 from django.shortcuts import render
+from django.http import HttpResponse
 from rango.models import Category
 from rango.models import Page
-from rango.forms import CategoryFrom
+from rango.forms import CategoryForm
 from rango.forms import PageForm
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -58,12 +58,12 @@ def show_category(request, category_name_slug):
 
 def add_category(request):
     
-    form = CategoryFrom()
+    form = CategoryForm()
 
     # A HTTP POST?
 
     if request.method == 'POST':
-        form = CategoryFrom(request.POST)
+        form = CategoryForm(request.POST)
 
         # Have we been provided with a valid form?
         if form.is_valid():
@@ -106,6 +106,9 @@ def add_page(request, category_name_slug):
                 page.views = 0
                 page.save()
 
-                return redirect(reverse('rango:show_category',
-                                        kwargs={'category_name_slug':
-                                            category_name_slug}))
+                return redirect(reverse('rango:show_category', kwargs={'category_name_slug':category_name_slug}))
+        else:
+            print(form.errors)
+        
+    context_dict = {'form': form, 'category': category}
+    return render(request, 'rango/add_page.html', context=context_dict)
